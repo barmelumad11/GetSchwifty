@@ -8,4 +8,8 @@ class GameFactory {
         let board = boardFactory.createEasyBoard(size);
         return new Game(board, 0, false);
     }
+
+    createFromState(gameState) {
+        return new Game(gameState.board, gameState.size, gameState.isOver);
+    }
 }

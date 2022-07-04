@@ -56,16 +56,17 @@ class Bootstraper {
             }
 
             async function start(gameJson) {
-                let game = gameJson ? JSON.parse(gameJson) : new GameFactory().createGame(size.innerText);
+                let game = gameJson ? new GameFactory().createFromState(JSON.parse(gameJson)) : new GameFactory().createGame(size.innerText);
                 document.documentElement.style.setProperty('--cell-size', `${100}px`);
                 let imageCutter = new ImageCutter();
                 let cellInitializer = useImage.checked ? new ImageCellInitializer(await imageCutter.cutImageUp(size.innerText)) : new NumberCellInitializer();
                 let gameViewIntializer = new GameViewIntializer(game, topScoreTable, boardDiv, name.value, winningDiv, cellInitializer);
                 gameViewIntializer.initialize();
                 let exportButton = document.getElementById("exportButton");
+
                 exportButton.addEventListener("click", () => {
                     let fileDonwloader = new FileDonwloader();
-                    fileDonwloader.download("game.json", JSON.stringify(game));
+                    fileDonwloader.download("game.json", JSON.stringify(new GameState(game.board, game.movesPlayed, game.isOver)));
                 });
             }
         }));
