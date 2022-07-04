@@ -63,7 +63,7 @@ class Bootstraper {
                     document.documentElement.style.setProperty('--cell-size', `${100}px`);
                     let imageCutter = new ImageCutter();
                     let imageLoader = new ImageLoader();
-                    let cellInitializer = useImage.checked ? new ImageCellInitializer(imageCutter.cutImageUp(await imageLoader.load(size), size.innerText)) 
+                    let cellInitializer = useImage.checked ? new ImageCellInitializer(imageCutter.cutImageUp(await imageLoader.load(), size.innerText)) 
                     : new NumberCellInitializer();
                     let gameViewIntializer = new GameViewIntializer(game, topScoreTable, boardDiv, name.value, winningDiv, cellInitializer);
                     gameViewIntializer.initialize();
@@ -76,9 +76,7 @@ class Bootstraper {
                 } else {
                     let game = new GameFactory().createFromState(settings.gameState);
                     document.documentElement.style.setProperty('--cell-size', `${100}px`);
-                    console.log(localStorage.Image);
-                    let cellInitializer = localStorage.Image === undefined ? new NumberCellInitializer() :
-                     new ImageCellInitializer(await new ImageCutter().cutImageUp(await new ImageLoader().load(size.innerText, localStorage.Image), size.innerText));
+                    let cellInitializer = new NumberCellInitializer();
                     let gameViewIntializer = new GameViewIntializer(game, topScoreTable, boardDiv, settings.name, winningDiv, cellInitializer);
                     gameViewIntializer.initialize();
                     let exportButton = document.getElementById("exportButton");
@@ -126,7 +124,6 @@ class Bootstraper {
         let endGame = document.getElementById("endGame");
         endGame.addEventListener("click", () => {
             localStorage.removeItem("Settings");
-            localStorage.removeItem("Image");
             viewStateMachine.switchState("menu");
         });
     }

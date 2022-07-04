@@ -37,7 +37,6 @@ class GameViewIntializer {
         if (this.game.isOver) {
             let now = new Date();
             localStorage.removeItem("Settings");
-            localStorage.removeItem("Image");
             this.topScoreTable.newScore(new Score(this.name, this.game.movesPlayed, this.game.board.size, `${now.getDate()}-${now.getMonth()}-${now.getFullYear()}`))
             this.winningDiv.classList.add("show");
         }
