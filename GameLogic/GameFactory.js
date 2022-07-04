@@ -4,8 +4,7 @@ class GameFactory {
         const matrixValidator = new MatrixValidator();
         const boardFactory = new BoardFactory();
     
-        //let board = boardFactory.createSolvableBoard(size, arrayShuffler, matrixValidator);
-        let board = boardFactory.createEasyBoard(size);
+        let board = boardFactory.createSolvableBoard(size, arrayShuffler, matrixValidator);
         return new Game(board, 0, false);
     }
 
