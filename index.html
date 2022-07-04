@@ -8,6 +8,32 @@
     <link rel="icon" type="image/x-icon" href="./Icon/favicon.ico">
 </head>
 <body>
+    <div class="menu" id="menu">
+        <h1>Welcome to Get Schwifty!</h1>
+        <label for="name">Name</label>
+        <input type="text" id="name">
+        <button id="incrementSize">+</button>
+        <div class="size" id="size">3</div>
+        <button id="decrementSize">-</button>
+        <button id="startButton">Start</button>
+        <button id="topScoresButton">Top Scores</button>
+        <label for="useImage">Use Image</label>
+        <input type="checkbox" id="useImage">
+        <input type="file"
+        id="image" name="image"
+        accept="image/png, image/jpeg">
+    </div>
+
+    <div class="top-scores-page" id="topScoresPage">
+        <div class="top-scores" id="topScores"></div>
+        <button id="backToMenuButton">Back To Menu</button>
+    </div>
+
+    <div class="board" id="board"></div>
     
+    <div class="winning-message" id="winningMessage">
+        <div>Congratulations! You Won!</div>
+        <button id="restartButton">Restart</button>
+    </div>
 </body>
 </html>
