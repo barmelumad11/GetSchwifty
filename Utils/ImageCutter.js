@@ -1,10 +1,5 @@
 class ImageCutter {
-    async cutImageUp(size) {
-        let imagePath = document.getElementById("image");
-        let image = new Image();
-        image.src = imagePath.files && imagePath.files[0] ? URL.createObjectURL(imagePath.files[0]) : "Icon/favicon.ico";
-        await image.decode();
-    
+    cutImageUp(image, size) {
         let cellSize = Math.round(image.height / size);
         document.documentElement.style.setProperty('--cell-size', `${cellSize}px`);
     

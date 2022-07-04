@@ -6,6 +6,7 @@ class Bootstraper {
         let importedGame = document.getElementById("importedGame");
 
         let topScoreTable = localStorage.topScoresList === undefined ? new TopScoreTable([]) : new TopScoreTable(JSON.parse(localStorage.topScoresList));
+        let settings = localStorage.Settings === undefined ? undefined : JSON.parse(localStorage.Settings);
         
         let incrementSize = document.getElementById("incrementSize");
         incrementSize.addEventListener("click", () => {
@@ -56,22 +57,46 @@ class Bootstraper {
             }
 
             async function start(gameJson) {
-                let game = gameJson ? new GameFactory().createFromState(JSON.parse(gameJson)) : new GameFactory().createGame(size.innerText);
-                document.documentElement.style.setProperty('--cell-size', `${100}px`);
-                let imageCutter = new ImageCutter();
-                let cellInitializer = useImage.checked ? new ImageCellInitializer(await imageCutter.cutImageUp(size.innerText)) : new NumberCellInitializer();
-                let gameViewIntializer = new GameViewIntializer(game, topScoreTable, boardDiv, name.value, winningDiv, cellInitializer);
-                gameViewIntializer.initialize();
-                let exportButton = document.getElementById("exportButton");
-
-                exportButton.addEventListener("click", () => {
-                    let fileDonwloader = new FileDonwloader();
-                    fileDonwloader.download("game.json", JSON.stringify(new GameState(game.board, game.movesPlayed, game.isOver)));
-                });
+                settings = localStorage.Settings === undefined ? undefined : JSON.parse(localStorage.Settings);
+                if (settings === undefined) {
+                    let game = gameJson ? new GameFactory().createFromState(JSON.parse(gameJson)) : new GameFactory().createGame(size.innerText);
+                    document.documentElement.style.setProperty('--cell-size', `${100}px`);
+                    let imageCutter = new ImageCutter();
+                    let imageLoader = new ImageLoader();
+                    let cellInitializer = useImage.checked ? new ImageCellInitializer(imageCutter.cutImageUp(await imageLoader.load(size), size.innerText)) 
+                    : new NumberCellInitializer();
+                    let gameViewIntializer = new GameViewIntializer(game, topScoreTable, boardDiv, name.value, winningDiv, cellInitializer);
+                    gameViewIntializer.initialize();
+                    let exportButton = document.getElementById("exportButton");
+    
+                    exportButton.addEventListener("click", () => {
+                        let fileDonwloader = new FileDonwloader();
+                        fileDonwloader.download("game.json", JSON.stringify(new GameState(game.board, game.movesPlayed, game.isOver)));
+                    });
+                } else {
+                    let game = new GameFactory().createFromState(settings.gameState);
+                    document.documentElement.style.setProperty('--cell-size', `${100}px`);
+                    console.log(localStorage.Image);
+                    let cellInitializer = localStorage.Image === undefined ? new NumberCellInitializer() :
+                     new ImageCellInitializer(await new ImageCutter().cutImageUp(await new ImageLoader().load(size.innerText, localStorage.Image), size.innerText));
+                    let gameViewIntializer = new GameViewIntializer(game, topScoreTable, boardDiv, settings.name, winningDiv, cellInitializer);
+                    gameViewIntializer.initialize();
+                    let exportButton = document.getElementById("exportButton");
+    
+                    exportButton.addEventListener("click", () => {
+                        let fileDonwloader = new FileDonwloader();
+                        fileDonwloader.download("game.json", JSON.stringify(new GameState(game.board, game.movesPlayed, game.isOver)));
+                    });
+                }
             }
         }));
         
-        let viewStateMachine = new ViewStateMachine("menu", stateToView);
+        let viewStateMachine = undefined;
+        if (settings === undefined) {
+            viewStateMachine = new ViewStateMachine("menu", stateToView);
+        } else {
+            viewStateMachine = new ViewStateMachine("board", stateToView);
+        }
         
         let startButton = document.getElementById("startButton");
         startButton.addEventListener("click", () => {
@@ -96,6 +121,13 @@ class Bootstraper {
         backToMenuButton.addEventListener("click", () => {
             viewStateMachine.switchState("menu");
             winningDiv.classList.remove("show");
+        });
+
+        let endGame = document.getElementById("endGame");
+        endGame.addEventListener("click", () => {
+            localStorage.removeItem("Settings");
+            localStorage.removeItem("Image");
+            viewStateMachine.switchState("menu");
         });
     }
 }

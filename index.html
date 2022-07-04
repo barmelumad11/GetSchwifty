@@ -12,6 +12,7 @@
     <script src="index.js"></script>
     <script src="Utils/ImageCutter.js"></script>
     <script src="Utils/FileDownloader.js"></script>
+    <script src="Utils/ImageLoader.js"></script>
     <script src="Bootstrapper/Bootstrapper.js"></script>
     <script src="GameLogic/Game.js"></script>
     <script src="GameLogic/GameFactory.js"></script>
@@ -27,6 +28,7 @@
     <script src="Models/Score.js"></script>
     <script src="Models/TopScoreTable.js"></script>
     <script src="Models/GameState.js"></script>
+    <script src="Models/Settings.js"></script>
 </head>
 <body>
     <div class="menu" id="menu">
@@ -40,9 +42,11 @@
         <button id="topScoresButton">Top Scores</button>
         <label for="useImage">Use Image</label>
         <input type="checkbox" id="useImage">
+        <label for="image">Image</label>
         <input type="file"
         id="image" name="image"
         accept="image/png, image/jpeg">
+        <label for="importedGame">Import</label>
         <input type="file"
         id="importedGame" name="importedGame">
     </div>
@@ -55,6 +59,7 @@
     <div class="board-page" id="boardPage">
         <div class="board" id="board"></div>
         <button id="exportButton">Export</button>
+        <button id="endGame">Back To Menu</button>
     </div>
     
     <div class="winning-message" id="winningMessage">

@@ -10,6 +10,6 @@ class GameFactory {
     }
 
     createFromState(gameState) {
-        return new Game(gameState.board, gameState.size, gameState.isOver);
+        return new Game(gameState.board, gameState.movesPlayed, gameState.isOver);
     }
 }
