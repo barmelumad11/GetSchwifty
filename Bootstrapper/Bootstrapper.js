@@ -3,6 +3,7 @@ class Bootstraper {
         let name = document.getElementById("name");
         let size = document.getElementById("size");
         let useImage = document.getElementById("useImage");
+        let importedGame = document.getElementById("importedGame");
 
         let topScoreTable = localStorage.topScoresList === undefined ? new TopScoreTable([]) : new TopScoreTable(JSON.parse(localStorage.topScoresList));
         
@@ -41,18 +42,32 @@ class Bootstraper {
         }));
 
         stateToView.set("board", new View(boardPageDiv, async () => {
-            let game = new GameFactory().createGame(size.innerText);
-            document.documentElement.style.setProperty('--cell-size', `${100}px`);
-            let imageCutter = new ImageCutter();
-            let cellInitializer = useImage.checked ? new ImageCellInitializer(await imageCutter.cutImageUp(size.innerText)) : new NumberCellInitializer();
-            let gameViewIntializer = new GameViewIntializer(game, topScoreTable, boardDiv, name.value, winningDiv, cellInitializer);
-            gameViewIntializer.initialize();
+            if (importedGame.files[0]) {
+                var fr = new FileReader();
+                
+                fr.onload = () => {
+                    start(fr.result);
+                }
+                
+                await fr.readAsText(importedGame.files[0])
+            }
+            else {
+                start();
+            }
 
-            let exportButton = document.getElementById("exportButton");
-            exportButton.addEventListener("click", () => {
-                let fileDonwloader = new FileDonwloader();
-                fileDonwloader.download("game.json", JSON.stringify(game));
-            });
+            async function start(gameJson) {
+                let game = gameJson ? JSON.parse(gameJson) : new GameFactory().createGame(size.innerText);
+                document.documentElement.style.setProperty('--cell-size', `${100}px`);
+                let imageCutter = new ImageCutter();
+                let cellInitializer = useImage.checked ? new ImageCellInitializer(await imageCutter.cutImageUp(size.innerText)) : new NumberCellInitializer();
+                let gameViewIntializer = new GameViewIntializer(game, topScoreTable, boardDiv, name.value, winningDiv, cellInitializer);
+                gameViewIntializer.initialize();
+                let exportButton = document.getElementById("exportButton");
+                exportButton.addEventListener("click", () => {
+                    let fileDonwloader = new FileDonwloader();
+                    fileDonwloader.download("game.json", JSON.stringify(game));
+                });
+            }
         }));
         
         let viewStateMachine = new ViewStateMachine("menu", stateToView);
