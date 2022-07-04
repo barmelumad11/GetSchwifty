@@ -11,6 +11,7 @@
 
     <script src="index.js"></script>
     <script src="Utils/ImageCutter.js"></script>
+    <script src="Utils/FileDownloader.js"></script>
     <script src="Bootstrapper/Bootstrapper.js"></script>
     <script src="GameLogic/Game.js"></script>
     <script src="GameLogic/GameFactory.js"></script>
@@ -48,7 +49,11 @@
         <button id="backToMenuButton">Back To Menu</button>
     </div>
 
-    <div class="board" id="board"></div>
+    <div class="board-page" id="boardPage">
+        <div class="board" id="board"></div>
+        <button id="exportButton">Export</button>
+    </div>
+        
     
     <div class="winning-message" id="winningMessage">
         <div>Congratulations! You Won!</div>

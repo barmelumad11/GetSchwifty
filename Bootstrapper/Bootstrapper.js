@@ -22,6 +22,7 @@ class Bootstraper {
         let topScoresPage = document.getElementById("topScores");
         let topScoresPageDiv = document.getElementById("topScoresPage");
         let boardDiv = document.getElementById("board");
+        let boardPageDiv = document.getElementById("boardPage");
         let winningDiv = document.getElementById("winningMessage");
         
         stateToView.set("menu", new View(menuDiv));
@@ -39,13 +40,19 @@ class Bootstraper {
             }
         }));
 
-        stateToView.set("board", new View(boardDiv, async () => {
+        stateToView.set("board", new View(boardPageDiv, async () => {
             let game = new GameFactory().createGame(size.innerText);
             document.documentElement.style.setProperty('--cell-size', `${100}px`);
             let imageCutter = new ImageCutter();
             let cellInitializer = useImage.checked ? new ImageCellInitializer(await imageCutter.cutImageUp(size.innerText)) : new NumberCellInitializer();
             let gameViewIntializer = new GameViewIntializer(game, topScoreTable, boardDiv, name.value, winningDiv, cellInitializer);
             gameViewIntializer.initialize();
+
+            let exportButton = document.getElementById("exportButton");
+            exportButton.addEventListener("click", () => {
+                let fileDonwloader = new FileDonwloader();
+                fileDonwloader.download("game.json", JSON.stringify(game));
+            });
         }));
         
         let viewStateMachine = new ViewStateMachine("menu", stateToView);
@@ -75,17 +82,4 @@ class Bootstraper {
             winningDiv.classList.remove("show");
         });
     }
-}
-
-function download(filename, text) {
-    var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-    element.setAttribute('download', filename);
-
-    element.style.display = 'none';
-    document.body.appendChild(element);
-  
-    element.click();
-
-    document.body.removeChild(element);
 }
